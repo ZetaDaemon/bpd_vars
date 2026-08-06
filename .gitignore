@@ -1,0 +1,36 @@
+# CMake build directories
+build/
+out/
+cmake-build-*/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+CTestTestfile.cmake
+cmake_install.cmake
+compile_commands.json
+install_manifest.txt
+
+# Ninja
+.ninja_deps
+.ninja_log
+build.ninja
+rules.ninja
+
+# Visual Studio Code CMake Tools
+.vscode/.cmake/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Native build outputs
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.so
+*.pyd
+*.exe
