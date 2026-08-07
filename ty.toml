@@ -1,0 +1,13 @@
+[environment]
+extra-paths = [
+    "/home/zetters/.local/share/Steam/steamapps/common/Borderlands 2/sdk_mods/.gamestubs",
+    "/home/zetters/.local/share/Steam/steamapps/common/Borderlands 2/sdk_mods/.stubs",
+    "/home/zetters/.local/share/Steam/steamapps/common/Borderlands 2/sdk_mods/",
+]
+
+[rules]
+invalid-argument-type = "ignore"
+invalid-attribute-access = "ignore"
+invalid-assignment = "ignore"
+no-matching-overload = "ignore"
+unresolved-attribute = "ignore"

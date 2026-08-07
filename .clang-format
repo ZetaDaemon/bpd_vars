@@ -1,0 +1,25 @@
+BasedOnStyle: LLVM
+
+IndentWidth: 4
+ColumnLimit: 110
+
+AllowShortFunctionsOnASingleLine: false
+AllowShortBlocksOnASingleLine: false
+
+Cpp11BracedListStyle: false
+BinPackArguments: false
+BinPackParameters: false
+
+
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: Always
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterArrayInitializer: true
+  BeforeCatch: true
+  BeforeElse: true
+  IndentBraces: false
