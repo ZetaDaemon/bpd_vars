@@ -45,6 +45,16 @@ void bind_vector(py::module_ &m)
 
     auto bound_class = py::class_<structs::BVVector>(m, "BVVector");
 
+    bound_class.def(py::init([](py::object Value) {
+                        structs::BVVector result{};
+                        if (!Value.is_none())
+                        {
+                            result.Value = *to_struct<common::Vector>(Value, struct_type);
+                        }
+                        return result;
+                    }),
+                    py::arg("Value") = py::none());
+
     bound_class.def_property(
         "Value",
         [](structs::BVVector &self) { return WrappedStruct(struct_type, &self.Value); },
@@ -77,6 +87,25 @@ void bind_attribute(py::module_ &m)
         L"ScriptStruct", L"Engine.AttributeInitializationDefinition:AttributeInitializationData"));
 
     auto bound_class = py::class_<structs::BVAttributeData>(m, "BVAttributeData");
+
+    bound_class.def(py::init([](py::object ContextVariable, py::object Value) {
+                        structs::BVAttributeData result{};
+
+                        if (!ContextVariable.is_none())
+                        {
+                            result.ContextVariable =
+                                *to_struct<common::SubarrayData>(ContextVariable, struct_type_context);
+                        }
+                        if (!Value.is_none())
+                        {
+                            result.Value =
+                                *to_struct<common::AttributeInitializationData>(Value, struct_type_value);
+                        }
+
+                        return result;
+                    }),
+                    py::arg("ContextVariable") = py::none(),
+                    py::arg("Value") = py::none());
 
     bound_class.def_property(
         "ContextVariable",
@@ -113,6 +142,58 @@ void bind_direction_vector(py::module_ &m)
         validate_type<UScriptStruct>(unrealsdk::find_object(L"ScriptStruct", L"Core.Object:Rotator"));
 
     auto bound_class = py::class_<structs::BVDirectionVectorData>(m, "BVDirectionVectorData");
+
+    bound_class.def(
+        py::init([](py::object Direction,
+                    py::object ParentVariable,
+                    py::object DefaultDirection,
+                    py::object DefaultDirectionVariable,
+                    py::object AdditionalRotation,
+                    py::object DefaultConeAroundDirection,
+                    py::object ConeVariable) {
+            structs::BVDirectionVectorData result{};
+
+            if (!Direction.is_none())
+            {
+                result.Direction = static_cast<enums::EDirectionRelativeToParent>(Direction.cast<uint8_t>());
+            }
+            if (!DefaultDirection.is_none())
+            {
+                result.DefaultDirection = *to_struct<common::Vector>(DefaultDirection, struct_type_vector);
+            }
+            if (!DefaultDirectionVariable.is_none())
+            {
+                result.DefaultDirectionVariable =
+                    *to_struct<common::SubarrayData>(DefaultDirectionVariable, struct_type_subarray);
+            }
+            if (!AdditionalRotation.is_none())
+            {
+                result.AdditionalRotation =
+                    *to_struct<common::Rotator>(AdditionalRotation, struct_type_rotator);
+            }
+            if (!ParentVariable.is_none())
+            {
+                result.ParentVariable =
+                    *to_struct<common::SubarrayData>(ParentVariable, struct_type_subarray);
+            }
+            if (!DefaultConeAroundDirection.is_none())
+            {
+                result.DefaultConeAroundDirection = DefaultConeAroundDirection.cast<float>();
+            }
+            if (!ConeVariable.is_none())
+            {
+                result.ConeVariable = *to_struct<common::SubarrayData>(ConeVariable, struct_type_subarray);
+            }
+
+            return result;
+        }),
+        py::arg("Direction") = py::none(),
+        py::arg("ParentVariable") = py::none(),
+        py::arg("DefaultDirection") = py::none(),
+        py::arg("DefaultDirectionVariable") = py::none(),
+        py::arg("AdditionalRotation") = py::none(),
+        py::arg("DefaultConeAroundDirection") = py::none(),
+        py::arg("ConeVariable") = py::none());
 
     bound_class.def_property(
         "Direction",
@@ -197,6 +278,45 @@ void bind_attachment_location(py::module_ &m)
 
     auto bound_class = py::class_<structs::BVAttachmentLocationData>(m, "BVAttachmentLocationData");
 
+    bound_class.def(py::init([](py::object SourceVariable,
+                                py::object AttachmentName,
+                                py::object bDefaultToSourceLocation,
+                                py::object DefaultLocation,
+                                py::object DefaultLocationVariable) {
+                        structs::BVAttachmentLocationData result{};
+
+                        if (!SourceVariable.is_none())
+                        {
+                            result.SourceVariable =
+                                *to_struct<common::SubarrayData>(SourceVariable, struct_type_subarray);
+                        }
+                        if (!AttachmentName.is_none())
+                        {
+                            result.AttachmentName = FName(AttachmentName.cast<std::string>());
+                        }
+                        if (!bDefaultToSourceLocation.is_none())
+                        {
+                            result.bDefaultToSourceLocation = bDefaultToSourceLocation.cast<uint32_t>();
+                        }
+                        if (!DefaultLocation.is_none())
+                        {
+                            result.DefaultLocation =
+                                *to_struct<common::Vector>(DefaultLocation, struct_type_vector);
+                        }
+                        if (!DefaultLocationVariable.is_none())
+                        {
+                            result.DefaultLocationVariable = *to_struct<common::SubarrayData>(
+                                DefaultLocationVariable, struct_type_subarray);
+                        }
+
+                        return result;
+                    }),
+                    py::arg("SourceVariable") = py::none(),
+                    py::arg("AttachmentName") = py::none(),
+                    py::arg("bDefaultToSourceLocation") = py::none(),
+                    py::arg("DefaultLocation") = py::none(),
+                    py::arg("DefaultLocationVariable") = py::none());
+
     bound_class.def_property(
         "SourceVariable",
         [](structs::BVAttachmentLocationData &self) {
@@ -257,6 +377,24 @@ void bind_instance_data(py::module_ &m)
 
     auto bound_class = py::class_<structs::BVInstanceDataData>(m, "BVInstanceDataData");
 
+    bound_class.def(py::init([](py::object ContextVariable, py::object InstanceDataName) {
+                        structs::BVInstanceDataData result{};
+
+                        if (!ContextVariable.is_none())
+                        {
+                            result.ContextVariable =
+                                *to_struct<common::SubarrayData>(ContextVariable, struct_type_context);
+                        }
+                        if (!InstanceDataName.is_none())
+                        {
+                            result.InstanceDataName = FName(InstanceDataName.cast<std::string>());
+                        }
+
+                        return result;
+                    }),
+                    py::arg("ContextVariable") = py::none(),
+                    py::arg("InstanceDataName") = py::none());
+
     bound_class.def_property(
         "ContextVariable",
         [](structs::BVInstanceDataData &self) {
@@ -267,7 +405,7 @@ void bind_instance_data(py::module_ &m)
         });
 
     bound_class.def_property(
-        "AttachmentName",
+        "InstanceDataName",
         [](structs::BVInstanceDataData &self) { return py::str(self.InstanceDataName); },
         [](structs::BVInstanceDataData &self, py::object value) {
             self.InstanceDataName = FName(value.cast<std::string>());
@@ -286,6 +424,29 @@ void bind_binary_math(py::module_ &m)
         unrealsdk::find_object(L"ScriptStruct", L"GearboxFramework.BehaviorProviderDefinition:SubarrayData"));
 
     auto bound_class = py::class_<structs::BVBinaryMathData>(m, "BVBinaryMathData");
+
+    bound_class.def(
+        py::init([](py::object OperandA, py::object OperandB, py::object Operation) {
+            structs::BVBinaryMathData result{};
+
+            if (!OperandA.is_none())
+            {
+                result.OperandA = *to_struct<common::SubarrayData>(OperandA, struct_type_subarray);
+            }
+            if (!OperandB.is_none())
+            {
+                result.OperandB = *to_struct<common::SubarrayData>(OperandB, struct_type_subarray);
+            }
+            if (!Operation.is_none())
+            {
+                result.Operation = static_cast<enums::EBinaryMathOperation>(Operation.cast<int32_t>());
+            }
+
+            return result;
+        }),
+        py::arg("OperandA") = py::none(),
+        py::arg("OperandB") = py::none(),
+        py::arg("Operation") = py::none());
 
     bound_class.def_property(
         "OperandA",
@@ -323,6 +484,23 @@ void bind_unary_math(py::module_ &m)
 
     auto bound_class = py::class_<structs::BVUnaryMathData>(m, "BVUnaryMathData");
 
+    bound_class.def(py::init([](py::object Operand, py::object Operation) {
+                        structs::BVUnaryMathData result{};
+
+                        if (!Operand.is_none())
+                        {
+                            result.Operand = *to_struct<common::SubarrayData>(Operand, struct_type_subarray);
+                        }
+                        if (!Operation.is_none())
+                        {
+                            result.Operation = Operation.cast<int32_t>();
+                        }
+
+                        return result;
+                    }),
+                    py::arg("Operand") = py::none(),
+                    py::arg("Operation") = py::none());
+
     bound_class.def_property(
         "Operand",
         [](structs::BVUnaryMathData &self) { return WrappedStruct(struct_type_subarray, &self.Operand); },
@@ -333,9 +511,7 @@ void bind_unary_math(py::module_ &m)
     bound_class.def_property(
         "Operation",
         [](structs::BVUnaryMathData &self) { return py::int_(static_cast<int32_t>(self.Operation)); },
-        [](structs::BVUnaryMathData &self, py::object value) {
-            self.Operation = static_cast<enums::EBinaryMathOperation>(value.cast<int32_t>());
-        });
+        [](structs::BVUnaryMathData &self, py::object value) { self.Operation = value.cast<int32_t>(); });
 
     bound_class.def("__repr__", [](structs::BVUnaryMathData &self) {
         return std::format(
@@ -349,6 +525,24 @@ void bind_flag(py::module_ &m)
         unrealsdk::find_object(L"ScriptStruct", L"GearboxFramework.BehaviorProviderDefinition:SubarrayData"));
 
     auto bound_class = py::class_<structs::BVFlagData>(m, "BVFlagData");
+
+    bound_class.def(py::init([](py::object ContextVariable, py::object FlagDef) {
+                        structs::BVFlagData result{};
+
+                        if (!ContextVariable.is_none())
+                        {
+                            result.ContextVariable =
+                                *to_struct<common::SubarrayData>(ContextVariable, struct_type_subarray);
+                        }
+                        if (!FlagDef.is_none())
+                        {
+                            result.FlagDef = pyunrealsdk::type_casters::cast<UObject *>(FlagDef);
+                        }
+
+                        return result;
+                    }),
+                    py::arg("ContextVariable") = py::none(),
+                    py::arg("FlagDef") = py::none());
 
     bound_class.def_property(
         "ContextVariable",
