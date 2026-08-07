@@ -1,12 +1,17 @@
 #include "variable_handler.h"
 #include "pyunrealsdk/type_casters.h"
+#include "types/enums.h"
 #include "types/structs.h"
+#include "unrealsdk/unreal/classes/uobject.h"
 #include "unrealsdk/unreal/wrappers/wrapped_struct.h"
+#include "unrealsdk/unrealsdk.h"
 #include <pybind11/pybind11.h>
+
+using namespace unrealsdk::unreal;
 
 namespace bpd_vars
 {
-template <typename T> py::object check_pointer(T *pntr)
+template <typename T> py::object pointer_to_pyobj(T *pntr)
 {
     if (pntr == nullptr)
     {
@@ -33,35 +38,147 @@ py::object get_behavior_variable_data(py::object obj)
         return py::float_(variable->Value.FloatValue);
 
     case enums::EBehaviorVariableType::BVAR_Object:
-        return check_pointer(variable->Value.ObjectValue);
+        return pointer_to_pyobj(variable->Value.ObjectValue);
 
     case enums::EBehaviorVariableType::BVAR_Vector:
-        return check_pointer(variable->Value.VectorValue);
+        return pointer_to_pyobj(variable->Value.VectorValue);
 
     case enums::EBehaviorVariableType::BVAR_Attribute:
-        return check_pointer(variable->Value.AttributeValue);
+        return pointer_to_pyobj(variable->Value.AttributeValue);
 
     case enums::EBehaviorVariableType::BVAR_DirectionVector:
-        return check_pointer(variable->Value.DirectionVectorValue);
+        return pointer_to_pyobj(variable->Value.DirectionVectorValue);
 
     case enums::EBehaviorVariableType::BVAR_AttachmentLocation:
-        return check_pointer(variable->Value.AttachmentLocationValue);
+        return pointer_to_pyobj(variable->Value.AttachmentLocationValue);
 
     case enums::EBehaviorVariableType::BVAR_InstanceData:
-        return check_pointer(variable->Value.InstanceDataValue);
+        return pointer_to_pyobj(variable->Value.InstanceDataValue);
 
     case enums::EBehaviorVariableType::BVAR_BinaryMath:
-        return check_pointer(variable->Value.BinaryMathValue);
+        return pointer_to_pyobj(variable->Value.BinaryMathValue);
 
     case enums::EBehaviorVariableType::BVAR_UnaryMath:
-        return check_pointer(variable->Value.UnaryMathValue);
+        return pointer_to_pyobj(variable->Value.UnaryMathValue);
 
     case enums::EBehaviorVariableType::BVAR_Flag:
-        return check_pointer(variable->Value.FlagValue);
+        return pointer_to_pyobj(variable->Value.FlagValue);
 
     default:
         return py::none();
     }
     return py::none();
+}
+
+template <typename T> T *copy_pyobj_to_pointer(py::object obj)
+{
+    void *memory = unrealsdk::u_malloc<T>(sizeof(T));
+    if (memory == nullptr)
+    {
+        throw std::bad_alloc();
+    }
+    if (obj.is_none())
+    {
+        return new (memory) T{};
+    }
+    return new (memory) T(*obj.cast<T *>());
+}
+
+void change_variable_value(py::object obj, py::object new_value)
+{
+    auto wrapped = pyunrealsdk::type_casters::cast<unrealsdk::unreal::WrappedStruct>(obj);
+
+    structs::BehaviorVariableData *variable =
+        reinterpret_cast<structs::BehaviorVariableData *>(wrapped.base.get());
+
+    switch (variable->Type)
+    {
+    case enums::EBehaviorVariableType::BVAR_Bool: {
+        uint32_t value = 0;
+        if (!new_value.is_none())
+        {
+            value = new_value.cast<bool>() ? 1 : 0;
+        }
+        variable->Value.BoolValue = value;
+        break;
+    }
+
+    case enums::EBehaviorVariableType::BVAR_Int: {
+        int32_t value = 0;
+        if (!new_value.is_none())
+        {
+            value = new_value.cast<int32_t>();
+        }
+        variable->Value.IntValue = value;
+        break;
+    }
+
+    case enums::EBehaviorVariableType::BVAR_Float: {
+        float value = 0.0f;
+        if (!new_value.is_none())
+        {
+            value = new_value.cast<float>();
+        }
+        variable->Value.FloatValue = value;
+        break;
+    }
+
+    case enums::EBehaviorVariableType::BVAR_Object:
+        if (new_value.is_none())
+        {
+            variable->Value.ObjectValue = nullptr;
+            break;
+        }
+        variable->Value.ObjectValue = pyunrealsdk::type_casters::cast<UObject *>(new_value);
+        break;
+
+    case enums::EBehaviorVariableType::BVAR_Vector:
+        variable->Value.VectorValue = copy_pyobj_to_pointer<structs::BVVector>(new_value);
+        break;
+
+    case enums::EBehaviorVariableType::BVAR_Attribute:
+        variable->Value.AttributeValue = copy_pyobj_to_pointer<structs::BVAttributeData>(new_value);
+        break;
+
+    case enums::EBehaviorVariableType::BVAR_DirectionVector:
+        variable->Value.DirectionVectorValue =
+            copy_pyobj_to_pointer<structs::BVDirectionVectorData>(new_value);
+        break;
+
+    case enums::EBehaviorVariableType::BVAR_AttachmentLocation:
+        variable->Value.AttachmentLocationValue =
+            copy_pyobj_to_pointer<structs::BVAttachmentLocationData>(new_value);
+        break;
+
+    case enums::EBehaviorVariableType::BVAR_InstanceData:
+        variable->Value.InstanceDataValue = copy_pyobj_to_pointer<structs::BVInstanceDataData>(new_value);
+        break;
+
+    case enums::EBehaviorVariableType::BVAR_BinaryMath:
+        variable->Value.BinaryMathValue = copy_pyobj_to_pointer<structs::BVBinaryMathData>(new_value);
+        break;
+
+    case enums::EBehaviorVariableType::BVAR_UnaryMath:
+        variable->Value.UnaryMathValue = copy_pyobj_to_pointer<structs::BVUnaryMathData>(new_value);
+        break;
+
+    case enums::EBehaviorVariableType::BVAR_Flag:
+        variable->Value.FlagValue = copy_pyobj_to_pointer<structs::BVFlagData>(new_value);
+        break;
+
+    default:
+        break;
+    }
+}
+
+void change_variable_type(py::object obj, enums::EBehaviorVariableType type, py::object new_value)
+{
+    auto wrapped = pyunrealsdk::type_casters::cast<unrealsdk::unreal::WrappedStruct>(obj);
+
+    structs::BehaviorVariableData *variable =
+        reinterpret_cast<structs::BehaviorVariableData *>(wrapped.base.get());
+    variable->Type = type;
+
+    change_variable_value(obj, new_value);
 }
 } // namespace bpd_vars
