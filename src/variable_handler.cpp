@@ -171,13 +171,18 @@ void change_variable_value(py::object obj, py::object new_value)
     }
 }
 
-void change_variable_type(py::object obj, enums::EBehaviorVariableType type, py::object new_value)
+void change_variable_type(py::object obj, uint8_t type, py::object new_value)
 {
-    auto wrapped = pyunrealsdk::type_casters::cast<unrealsdk::unreal::WrappedStruct>(obj);
+    if (type >= static_cast<uint8_t>(enums::EBehaviorVariableType::BVAR_MAX))
+    {
+        throw py::value_error("Invalid type value");
+    }
 
+    auto wrapped = pyunrealsdk::type_casters::cast<unrealsdk::unreal::WrappedStruct>(obj);
     structs::BehaviorVariableData *variable =
         reinterpret_cast<structs::BehaviorVariableData *>(wrapped.base.get());
-    variable->Type = type;
+
+    variable->Type = static_cast<enums::EBehaviorVariableType>(type);
 
     change_variable_value(obj, new_value);
 }

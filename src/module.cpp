@@ -12,7 +12,20 @@ PYBIND11_MODULE(bpd_vars_native, m)
 
     m.def("get_behavior_variable_data",
           &bpd_vars::get_behavior_variable_data,
-          "Gets BehaviorVariableData Value.Data.");
+          "Gets BehaviorVariableData Value.");
+
+    m.def("change_variable_value",
+          &bpd_vars::change_variable_value,
+          py::arg("variable"),
+          py::arg("new_value"),
+          "Change the value stored in a BehaviorVariableData.");
+
+    m.def("change_variable_type",
+          &bpd_vars::change_variable_type,
+          py::arg("variable"),
+          py::arg("type"),
+          py::arg("new_value") = py::none(),
+          "Change the type and value stored in a BehaviorVariableData.");
 
     bpd_vars::bindings::bind_structs(m);
 }
