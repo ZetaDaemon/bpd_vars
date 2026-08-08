@@ -4,14 +4,15 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(bpd_vars_native, m)
+PYBIND11_MODULE(_bpd_vars_native, m)
 {
     m.doc() = "Native functions for bpd_vars";
 
-    m.def("version", []() { return "bpd_vars native 0.1"; }, "Returns native module version.");
+    m.def("version", []() { return "bpd_vars native 1.0"; }, "Returns native module version.");
 
     m.def("get_behavior_variable_data",
           &bpd_vars::get_behavior_variable_data,
+          py::arg("variable"),
           "Gets BehaviorVariableData Value.");
 
     m.def("change_variable_value",
@@ -23,9 +24,8 @@ PYBIND11_MODULE(bpd_vars_native, m)
     m.def("change_variable_type",
           &bpd_vars::change_variable_type,
           py::arg("variable"),
-          py::arg("type"),
-          py::arg("new_value") = py::none(),
-          "Change the type and value stored in a BehaviorVariableData.");
+          py::arg("variable_type"),
+          "Change the type stored in a BehaviorVariableData.");
 
     bpd_vars::bindings::bind_structs(m);
 }

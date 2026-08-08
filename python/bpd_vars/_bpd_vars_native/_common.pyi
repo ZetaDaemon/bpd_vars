@@ -1,5 +1,7 @@
 from unrealsdk.unreal import UObject, WrappedStruct
 
+from ._enums import EBehaviorVariableType
+
 class SubArrayData(WrappedStruct):
     """Wrapped GearboxFramework.BehaviorProviderDefinition:SubarrayData."""
 
@@ -28,3 +30,9 @@ class AttributeInitializationData(WrappedStruct):
     InitializationDefinition: UObject
     """Engine.AttributeInitializationDefinition"""
     BaseValueScaleConstant: float
+
+class BehaviorVariableData:
+    """Wrapped GearboxFramework.BehaviorProviderDefinition:BehaviorVariableData."""
+
+    Name: str
+    Type: EBehaviorVariableType

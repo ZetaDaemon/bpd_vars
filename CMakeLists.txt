@@ -11,7 +11,7 @@ add_subdirectory(
 )
 
 pyunrealsdk_add_module(
-    bpd_vars_native
+    _bpd_vars_native
     src/module.cpp
     src/variable_handler.cpp
     src/bindings/struct_bindings.cpp
@@ -19,7 +19,7 @@ pyunrealsdk_add_module(
 
 
 target_include_directories(
-    bpd_vars_native
+    _bpd_vars_native
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
@@ -29,12 +29,12 @@ set(BPD_VARS_PYTHON_DIR
 )
 
 add_custom_command(
-    TARGET bpd_vars_native
+    TARGET _bpd_vars_native
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory
             "${BPD_VARS_PYTHON_DIR}"
     COMMAND ${CMAKE_COMMAND} -E copy
-            $<TARGET_FILE:bpd_vars_native>
+            $<TARGET_FILE:_bpd_vars_native>
             "${BPD_VARS_PYTHON_DIR}"
 )
 
@@ -43,11 +43,11 @@ set(BL2_PLUGIN_DIR
 )
 
 add_custom_command(
-    TARGET bpd_vars_native
+    TARGET _bpd_vars_native
     POST_BUILD
 
     COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:bpd_vars_native>
+        $<TARGET_FILE:_bpd_vars_native>
         "${BL2_PLUGIN_DIR}"
 
     COMMAND ${CMAKE_COMMAND} -E copy
