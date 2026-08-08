@@ -7,8 +7,6 @@
 #include "unrealsdk/unreal/classes/uobject.h"
 #include "unrealsdk/unreal/structs/fname.h"
 
-using namespace unrealsdk::unreal;
-
 namespace bpd_vars::structs
 {
 
@@ -41,7 +39,7 @@ static_assert(sizeof(BVDirectionVectorData) == 0x2C);
 struct BVAttachmentLocationData
 {
     common::SubarrayData SourceVariable;
-    FName AttachmentName;
+    unrealsdk::unreal::FName AttachmentName;
     uint32_t bDefaultToSourceLocation;
     common::Vector DefaultLocation;
     common::SubarrayData DefaultLocationVariable;
@@ -51,7 +49,7 @@ static_assert(sizeof(BVAttachmentLocationData) == 0x20);
 struct BVInstanceDataData
 {
     common::SubarrayData ContextVariable;
-    FName InstanceDataName;
+    unrealsdk::unreal::FName InstanceDataName;
 };
 static_assert(sizeof(BVInstanceDataData) == 0xC);
 
@@ -73,32 +71,8 @@ static_assert(sizeof(BVUnaryMathData) == 0x8);
 struct BVFlagData
 {
     common::SubarrayData ContextVariable;
-    UObject *FlagDef;
+    unrealsdk::unreal::UObject *FlagDef;
 };
 static_assert(sizeof(BVFlagData) == 0x8);
 
-union BehaviorVariableDataValue {
-    uint32_t BoolValue;
-    int32_t IntValue;
-    float FloatValue;
-    UObject *ObjectValue;
-    BVVector *VectorValue;
-    BVAttributeData *AttributeValue;
-    BVDirectionVectorData *DirectionVectorValue;
-    BVAttachmentLocationData *AttachmentLocationValue;
-    BVInstanceDataData *InstanceDataValue;
-    BVBinaryMathData *BinaryMathValue;
-    BVUnaryMathData *UnaryMathValue;
-    BVFlagData *FlagValue;
-};
-static_assert(sizeof(BehaviorVariableDataValue) == 0x4);
-
-struct BehaviorVariableData
-{
-    FName Name;
-    enums::EBehaviorVariableType Type;
-    uint8_t Padding[3];
-    BehaviorVariableDataValue Value;
-};
-static_assert(sizeof(BehaviorVariableData) == 0x10);
 } // namespace bpd_vars::structs
