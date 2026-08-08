@@ -1,6 +1,6 @@
-from . import bpd_vars_native
-from .bpd_vars_native import get_behavior_variable_data, structs
+from . import _bpd_vars_native
+from .behavior_variable import BehaviorVariable
 
-__all__ = ["get_behavior_variable_data", "structs"]
+__all__ = ["BehaviorVariable"]
 
-print(bpd_vars_native.version())
+print(_bpd_vars_native.version())
