@@ -17,8 +17,8 @@ install_manifest.txt
 build.ninja
 rules.ninja
 
-# Visual Studio Code CMake Tools
-.vscode/.cmake/
+# Visual Studio Code
+.vscode/
 
 # Python
 __pycache__/
@@ -32,5 +32,4 @@ __pycache__/
 *.lib
 *.dll
 *.so
-*.pyd
 *.exe
