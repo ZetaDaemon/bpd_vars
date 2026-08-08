@@ -6,7 +6,7 @@
             "label": "CMake: build",
             "command": "build",
             "targets": [
-                "bpd_vars_native"
+                "_bpd_vars_native"
             ],
             "preset": "__defaultBuildPreset__",
             "group": {
