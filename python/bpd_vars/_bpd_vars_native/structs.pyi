@@ -1,6 +1,6 @@
 from unrealsdk.unreal import UObject
 
-from ._common import AttributeInitializationData, Rotator, SubArrayData, Vector
+from ._common import AttributeInitializationData, Rotator, SubarrayData, Vector
 from ._enums import EBinaryMathOperation, EDirectionRelativeToParent
 
 class BVVector:
@@ -9,82 +9,82 @@ class BVVector:
     def __init__(self, Value: Vector | None = None) -> None: ...
 
 class BVAttributeData:
-    ContextVariable: SubArrayData
+    ContextVariable: SubarrayData
     Value: AttributeInitializationData
 
     def __init__(
         self,
-        ContextVariable: SubArrayData | None = None,
+        ContextVariable: SubarrayData | None = None,
         Value: AttributeInitializationData | None = None,
     ) -> None: ...
 
 class BVDirectionVectorData:
     Direction: EDirectionRelativeToParent
-    ParentVariable: SubArrayData
+    ParentVariable: SubarrayData
     DefaultDirection: Vector
-    DefaultDirectionVariable: SubArrayData
+    DefaultDirectionVariable: SubarrayData
     AdditionalRotation: Rotator
     DefaultConeAroundDirection: float
-    ConeVariable: SubArrayData
+    ConeVariable: SubarrayData
 
     def __init__(
         self,
         Direction: EDirectionRelativeToParent = ...,
-        ParentVariable: SubArrayData | None = None,
+        ParentVariable: SubarrayData | None = None,
         DefaultDirection: Vector | None = None,
-        DefaultDirectionVariable: SubArrayData | None = None,
+        DefaultDirectionVariable: SubarrayData | None = None,
         AdditionalRotation: Rotator | None = None,
         DefaultConeAroundDirection: float = 0.0,
-        ConeVariable: SubArrayData | None = None,
+        ConeVariable: SubarrayData | None = None,
     ) -> None: ...
 
 class BVAttachmentLocationData:
-    SourceVariable: SubArrayData
+    SourceVariable: SubarrayData
     bDefaultToSourceLocation: int
     DefaultLocation: Vector
-    DefaultLocationVariable: SubArrayData
+    DefaultLocationVariable: SubarrayData
 
     def __init__(
         self,
-        SourceVariable: SubArrayData | None = None,
+        SourceVariable: SubarrayData | None = None,
         bDefaultToSourceLocation: int = 0,
         DefaultLocation: Vector | None = None,
-        DefaultLocationVariable: SubArrayData | None = None,
+        DefaultLocationVariable: SubarrayData | None = None,
     ) -> None: ...
 
 class BVInstanceDataData:
-    ContextVariable: SubArrayData
+    ContextVariable: SubarrayData
     InstanceDataName: str
 
     def __init__(
-        self, ContextVariable: SubArrayData | None = None, InstanceDataName: str = "None"
+        self, ContextVariable: SubarrayData | None = None, InstanceDataName: str = "None"
     ) -> None: ...
 
 class BVBinaryMathData:
-    OperandA: SubArrayData
-    OperandB: SubArrayData
+    OperandA: SubarrayData
+    OperandB: SubarrayData
     Operation: EBinaryMathOperation
 
     def __init__(
         self,
-        OperandA: SubArrayData | None = None,
-        OperandB: SubArrayData | None = None,
+        OperandA: SubarrayData | None = None,
+        OperandB: SubarrayData | None = None,
         Operation: EBinaryMathOperation = ...,
     ) -> None: ...
 
 class BVUnaryMathData:
-    Operand: SubArrayData
+    Operand: SubarrayData
     Operation: int
 
-    def __init__(self, Operand: SubArrayData | None = None, Operation: int = 0) -> None: ...
+    def __init__(self, Operand: SubarrayData | None = None, Operation: int = 0) -> None: ...
 
 class BVFlagData:
-    ContextVariable: SubArrayData
+    ContextVariable: SubarrayData
     FlagDef: UObject
     """GearboxFramework.FlagDefinition"""
 
     def __init__(
-        self, ContextVariable: SubArrayData | None = None, FlagDef: UObject | None = None
+        self, ContextVariable: SubarrayData | None = None, FlagDef: UObject | None = None
     ) -> None: ...
 
 type BehaviorVariableDataValue = (

@@ -2,7 +2,7 @@ from unrealsdk.unreal import UObject, WrappedStruct
 
 from ._enums import EBehaviorVariableType
 
-class SubArrayData(WrappedStruct):
+class SubarrayData(WrappedStruct):
     """Wrapped GearboxFramework.BehaviorProviderDefinition:SubarrayData."""
 
     ArrayIndexAndLength: int
