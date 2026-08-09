@@ -18,6 +18,7 @@ ignore = [
     "FBT003",
     "PYI021",
     "N815",
+    "N803",
 ]
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.

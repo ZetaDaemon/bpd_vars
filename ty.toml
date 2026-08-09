@@ -11,3 +11,6 @@ invalid-attribute-access = "ignore"
 invalid-assignment = "ignore"
 no-matching-overload = "ignore"
 unresolved-attribute = "ignore"
+
+[src]
+exclude = ["./libs/**"]
