@@ -39,7 +39,11 @@ py::object get_behavior_variable_data(py::object variable)
         return py::float_(variable_data->Value.FloatValue);
 
     case enums::EBehaviorVariableType::BVAR_Object:
-        return struct_pointer_to_pyobj(variable_data->Value.ObjectValue);
+        if (variable_data->Value.ObjectValue == nullptr)
+        {
+            return py::none();
+        }
+        return pyunrealsdk::type_casters::cast(variable_data->Value.ObjectValue);
 
     case enums::EBehaviorVariableType::BVAR_Vector:
         return struct_pointer_to_pyobj(variable_data->Value.VectorValue);
