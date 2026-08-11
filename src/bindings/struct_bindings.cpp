@@ -20,26 +20,26 @@ namespace bpd_vars::bindings
 
 template <typename T> T *to_struct(py::object object, UScriptStruct *struct_type)
 {
-    auto wrapped = pyunrealsdk::type_casters::cast<WrappedStruct *>(object);
-    if (!wrapped->base)
+    auto wrapped = pyunrealsdk::type_casters::cast<WrappedStruct>(object);
+    if (!wrapped.base)
     {
         throw std::runtime_error("Invalid wrapped struct");
     }
-    if (wrapped->type != struct_type)
+    if (wrapped.type != struct_type)
     {
         throw std::runtime_error("Expected " + struct_type->Name());
     }
-    return reinterpret_cast<T *>(wrapped->base.get());
+    return reinterpret_cast<T *>(wrapped.base.get());
 }
 
-WrappedStruct *to_wrapped_struct(py::object object, UScriptStruct *struct_type)
+WrappedStruct to_wrapped_struct(py::object object, UScriptStruct *struct_type)
 {
-    auto wrapped = pyunrealsdk::type_casters::cast<WrappedStruct *>(object);
-    if (!wrapped->base)
+    auto wrapped = pyunrealsdk::type_casters::cast<WrappedStruct>(object);
+    if (!wrapped.base)
     {
         throw std::runtime_error("Invalid wrapped struct");
     }
-    if (wrapped->type != struct_type)
+    if (wrapped.type != struct_type)
     {
         throw std::runtime_error("Expected " + struct_type->Name());
     }
@@ -49,8 +49,19 @@ WrappedStruct *to_wrapped_struct(py::object object, UScriptStruct *struct_type)
 std::string to_string(void *value, UScriptStruct *struct_type)
 {
     auto wrapped = unrealsdk::unreal::WrappedStruct(struct_type, value);
-    std::string str = py::str(pyunrealsdk::type_casters::cast(&wrapped));
+    std::string str = py::str(pyunrealsdk::type_casters::cast(wrapped));
     return str;
+}
+
+template <typename T> T *construct_struct()
+{
+    void *memory;
+    memory = unrealsdk::u_malloc(sizeof(T));
+    if (memory == nullptr)
+    {
+        throw std::bad_alloc();
+    }
+    return new (memory) T{};
 }
 
 void bind_vector(py::module_ &m)
@@ -65,7 +76,7 @@ void bind_vector(py::module_ &m)
                         if (!Value.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.Value),
-                                        *to_wrapped_struct(Value, struct_type));
+                                        to_wrapped_struct(Value, struct_type));
                         }
                         return result;
                     }),
@@ -75,7 +86,7 @@ void bind_vector(py::module_ &m)
         "Value",
         [](structs::BVVector &self) { return WrappedStruct(struct_type, &self.Value); },
         [](structs::BVVector &self, py::object Value) {
-            copy_struct(reinterpret_cast<uintptr_t>(&self.Value), *to_wrapped_struct(Value, struct_type));
+            copy_struct(reinterpret_cast<uintptr_t>(&self.Value), to_wrapped_struct(Value, struct_type));
         });
 
     bound_class.def("__repr__", [](structs::BVVector &self) {
@@ -99,12 +110,12 @@ void bind_attribute(py::module_ &m)
                         if (!ContextVariable.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.ContextVariable),
-                                        *to_wrapped_struct(ContextVariable, struct_type_context));
+                                        to_wrapped_struct(ContextVariable, struct_type_context));
                         }
                         if (!Value.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.Value),
-                                        *to_wrapped_struct(Value, struct_type_value));
+                                        to_wrapped_struct(Value, struct_type_value));
                         }
 
                         return result;
@@ -119,7 +130,7 @@ void bind_attribute(py::module_ &m)
         },
         [](structs::BVAttributeData &self, py::object value) {
             copy_struct(reinterpret_cast<uintptr_t>(&self.ContextVariable),
-                        *to_wrapped_struct(value, struct_type_context));
+                        to_wrapped_struct(value, struct_type_context));
         });
 
     bound_class.def_property(
@@ -127,7 +138,7 @@ void bind_attribute(py::module_ &m)
         [](structs::BVAttributeData &self) { return WrappedStruct(struct_type_value, &self.Value); },
         [](structs::BVAttributeData &self, py::object value) {
             copy_struct(reinterpret_cast<uintptr_t>(&self.Value),
-                        *to_wrapped_struct(value, struct_type_value));
+                        to_wrapped_struct(value, struct_type_value));
         });
 
     bound_class.def("__repr__", [](structs::BVAttributeData &self) {
@@ -167,22 +178,22 @@ void bind_direction_vector(py::module_ &m)
                         if (!DefaultDirection.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.DefaultDirection),
-                                        *to_wrapped_struct(DefaultDirection, struct_type_vector));
+                                        to_wrapped_struct(DefaultDirection, struct_type_vector));
                         }
                         if (!DefaultDirectionVariable.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.DefaultDirectionVariable),
-                                        *to_wrapped_struct(DefaultDirectionVariable, struct_type_subarray));
+                                        to_wrapped_struct(DefaultDirectionVariable, struct_type_subarray));
                         }
                         if (!AdditionalRotation.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.AdditionalRotation),
-                                        *to_wrapped_struct(AdditionalRotation, struct_type_rotator));
+                                        to_wrapped_struct(AdditionalRotation, struct_type_rotator));
                         }
                         if (!ParentVariable.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.ParentVariable),
-                                        *to_wrapped_struct(ParentVariable, struct_type_subarray));
+                                        to_wrapped_struct(ParentVariable, struct_type_subarray));
                         }
                         if (!DefaultConeAroundDirection.is_none())
                         {
@@ -191,7 +202,7 @@ void bind_direction_vector(py::module_ &m)
                         if (!ConeVariable.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.ConeVariable),
-                                        *to_wrapped_struct(ConeVariable, struct_type_subarray));
+                                        to_wrapped_struct(ConeVariable, struct_type_subarray));
                             result.ConeVariable =
                                 *to_struct<common::SubarrayData>(ConeVariable, struct_type_subarray);
                         }
@@ -220,7 +231,7 @@ void bind_direction_vector(py::module_ &m)
         },
         [](structs::BVDirectionVectorData &self, py::object value) {
             copy_struct(reinterpret_cast<uintptr_t>(&self.ParentVariable),
-                        *to_wrapped_struct(value, struct_type_subarray));
+                        to_wrapped_struct(value, struct_type_subarray));
         });
 
     bound_class.def_property(
@@ -230,7 +241,7 @@ void bind_direction_vector(py::module_ &m)
         },
         [](structs::BVDirectionVectorData &self, py::object value) {
             copy_struct(reinterpret_cast<uintptr_t>(&self.ParentVariable),
-                        *to_wrapped_struct(value, struct_type_vector));
+                        to_wrapped_struct(value, struct_type_vector));
         });
 
     bound_class.def_property(
@@ -240,7 +251,7 @@ void bind_direction_vector(py::module_ &m)
         },
         [](structs::BVDirectionVectorData &self, py::object value) {
             copy_struct(reinterpret_cast<uintptr_t>(&self.DefaultDirectionVariable),
-                        *to_wrapped_struct(value, struct_type_subarray));
+                        to_wrapped_struct(value, struct_type_subarray));
         });
 
     bound_class.def_property(
@@ -250,7 +261,7 @@ void bind_direction_vector(py::module_ &m)
         },
         [](structs::BVDirectionVectorData &self, py::object value) {
             copy_struct(reinterpret_cast<uintptr_t>(&self.AdditionalRotation),
-                        *to_wrapped_struct(value, struct_type_rotator));
+                        to_wrapped_struct(value, struct_type_rotator));
         });
 
     bound_class.def_property(
@@ -267,7 +278,7 @@ void bind_direction_vector(py::module_ &m)
         },
         [](structs::BVDirectionVectorData &self, py::object value) {
             copy_struct(reinterpret_cast<uintptr_t>(&self.ConeVariable),
-                        *to_wrapped_struct(value, struct_type_subarray));
+                        to_wrapped_struct(value, struct_type_subarray));
         });
 
     bound_class.def("__repr__", [](structs::BVDirectionVectorData &self) {
@@ -304,7 +315,7 @@ void bind_attachment_location(py::module_ &m)
                         if (!SourceVariable.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.SourceVariable),
-                                        *to_wrapped_struct(SourceVariable, struct_type_subarray));
+                                        to_wrapped_struct(SourceVariable, struct_type_subarray));
                         }
                         if (!AttachmentName.is_none())
                         {
@@ -317,12 +328,12 @@ void bind_attachment_location(py::module_ &m)
                         if (!DefaultLocation.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.DefaultLocation),
-                                        *to_wrapped_struct(DefaultLocation, struct_type_vector));
+                                        to_wrapped_struct(DefaultLocation, struct_type_vector));
                         }
                         if (!DefaultLocationVariable.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.DefaultLocationVariable),
-                                        *to_wrapped_struct(DefaultLocationVariable, struct_type_subarray));
+                                        to_wrapped_struct(DefaultLocationVariable, struct_type_subarray));
                         }
 
                         return result;
@@ -340,7 +351,7 @@ void bind_attachment_location(py::module_ &m)
         },
         [](structs::BVAttachmentLocationData &self, py::object value) {
             copy_struct(reinterpret_cast<uintptr_t>(&self.SourceVariable),
-                        *to_wrapped_struct(value, struct_type_subarray));
+                        to_wrapped_struct(value, struct_type_subarray));
         });
 
     bound_class.def_property(
@@ -364,7 +375,7 @@ void bind_attachment_location(py::module_ &m)
         },
         [](structs::BVAttachmentLocationData &self, py::object value) {
             copy_struct(reinterpret_cast<uintptr_t>(&self.DefaultLocation),
-                        *to_wrapped_struct(value, struct_type_vector));
+                        to_wrapped_struct(value, struct_type_vector));
         });
 
     bound_class.def_property(
@@ -374,7 +385,7 @@ void bind_attachment_location(py::module_ &m)
         },
         [](structs::BVAttachmentLocationData &self, py::object value) {
             copy_struct(reinterpret_cast<uintptr_t>(&self.DefaultLocationVariable),
-                        *to_wrapped_struct(value, struct_type_subarray));
+                        to_wrapped_struct(value, struct_type_subarray));
         });
 
     bound_class.def("__repr__", [](structs::BVAttachmentLocationData &self) {
@@ -402,7 +413,7 @@ void bind_instance_data(py::module_ &m)
                         if (!ContextVariable.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.ContextVariable),
-                                        *to_wrapped_struct(ContextVariable, struct_type_context));
+                                        to_wrapped_struct(ContextVariable, struct_type_context));
                         }
                         if (!InstanceDataName.is_none())
                         {
@@ -421,7 +432,7 @@ void bind_instance_data(py::module_ &m)
         },
         [](structs::BVInstanceDataData &self, py::object value) {
             copy_struct(reinterpret_cast<uintptr_t>(&self.ContextVariable),
-                        *to_wrapped_struct(value, struct_type_context));
+                        to_wrapped_struct(value, struct_type_context));
         });
 
     bound_class.def_property(
@@ -451,12 +462,12 @@ void bind_binary_math(py::module_ &m)
                         if (!OperandA.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.OperandA),
-                                        *to_wrapped_struct(OperandA, struct_type_subarray));
+                                        to_wrapped_struct(OperandA, struct_type_subarray));
                         }
                         if (!OperandB.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.OperandB),
-                                        *to_wrapped_struct(OperandB, struct_type_subarray));
+                                        to_wrapped_struct(OperandB, struct_type_subarray));
                         }
                         if (!Operation.is_none())
                         {
@@ -475,7 +486,7 @@ void bind_binary_math(py::module_ &m)
         [](structs::BVBinaryMathData &self) { return WrappedStruct(struct_type_subarray, &self.OperandA); },
         [](structs::BVBinaryMathData &self, py::object value) {
             copy_struct(reinterpret_cast<uintptr_t>(&self.OperandA),
-                        *to_wrapped_struct(value, struct_type_subarray));
+                        to_wrapped_struct(value, struct_type_subarray));
         });
 
     bound_class.def_property(
@@ -483,7 +494,7 @@ void bind_binary_math(py::module_ &m)
         [](structs::BVBinaryMathData &self) { return WrappedStruct(struct_type_subarray, &self.OperandB); },
         [](structs::BVBinaryMathData &self, py::object value) {
             copy_struct(reinterpret_cast<uintptr_t>(&self.OperandB),
-                        *to_wrapped_struct(value, struct_type_subarray));
+                        to_wrapped_struct(value, struct_type_subarray));
         });
 
     bound_class.def_property(
@@ -514,7 +525,7 @@ void bind_unary_math(py::module_ &m)
                         if (!Operand.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.Operand),
-                                        *to_wrapped_struct(Operand, struct_type_subarray));
+                                        to_wrapped_struct(Operand, struct_type_subarray));
                         }
                         if (!Operation.is_none())
                         {
@@ -531,7 +542,7 @@ void bind_unary_math(py::module_ &m)
         [](structs::BVUnaryMathData &self) { return WrappedStruct(struct_type_subarray, &self.Operand); },
         [](structs::BVUnaryMathData &self, py::object value) {
             copy_struct(reinterpret_cast<uintptr_t>(&self.Operand),
-                        *to_wrapped_struct(value, struct_type_subarray));
+                        to_wrapped_struct(value, struct_type_subarray));
         });
 
     bound_class.def_property(
@@ -558,7 +569,7 @@ void bind_flag(py::module_ &m)
                         if (!ContextVariable.is_none())
                         {
                             copy_struct(reinterpret_cast<uintptr_t>(&result.ContextVariable),
-                                        *to_wrapped_struct(ContextVariable, struct_type_subarray));
+                                        to_wrapped_struct(ContextVariable, struct_type_subarray));
                         }
                         if (!FlagDef.is_none())
                         {
@@ -575,7 +586,7 @@ void bind_flag(py::module_ &m)
         [](structs::BVFlagData &self) { return WrappedStruct(struct_type_subarray, &self.ContextVariable); },
         [](structs::BVFlagData &self, py::object value) {
             copy_struct(reinterpret_cast<uintptr_t>(&self.ContextVariable),
-                        *to_wrapped_struct(value, struct_type_subarray));
+                        to_wrapped_struct(value, struct_type_subarray));
         });
 
     bound_class.def_property(

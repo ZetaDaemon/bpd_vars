@@ -23,10 +23,10 @@ template <typename T> py::object struct_pointer_to_pyobj(T *pntr)
 }
 py::object get_behavior_variable_data(py::object variable)
 {
-    auto wrapped = pyunrealsdk::type_casters::cast<unrealsdk::unreal::WrappedStruct *>(variable);
+    auto wrapped = pyunrealsdk::type_casters::cast<unrealsdk::unreal::WrappedStruct>(variable);
 
     common::BehaviorVariableData *variable_data =
-        reinterpret_cast<common::BehaviorVariableData *>(wrapped->base.get());
+        reinterpret_cast<common::BehaviorVariableData *>(wrapped.base.get());
     switch (variable_data->Type)
     {
     case enums::EBehaviorVariableType::BVAR_Bool:
@@ -177,16 +177,20 @@ void change_variable_value_inner(common::BehaviorVariableData *variable_data, py
         break;
 
     default:
-        break;
+        // Allow clearing out the value even with unhandled types.
+        if (new_value.is_none())
+        {
+            variable_data->Value.IntValue = 0;
+        }
     }
 }
 
 void change_variable_value(py::object variable, py::object new_value)
 {
-    auto wrapped = pyunrealsdk::type_casters::cast<unrealsdk::unreal::WrappedStruct *>(variable);
+    auto wrapped = pyunrealsdk::type_casters::cast<unrealsdk::unreal::WrappedStruct>(variable);
 
     common::BehaviorVariableData *variable_data =
-        reinterpret_cast<common::BehaviorVariableData *>(wrapped->base.get());
+        reinterpret_cast<common::BehaviorVariableData *>(wrapped.base.get());
 
     change_variable_value_inner(variable_data, new_value);
 }
@@ -198,9 +202,9 @@ void change_variable_type(py::object variable, uint8_t variable_type)
         throw py::value_error("Invalid type value");
     }
 
-    auto wrapped = pyunrealsdk::type_casters::cast<unrealsdk::unreal::WrappedStruct *>(variable);
+    auto wrapped = pyunrealsdk::type_casters::cast<unrealsdk::unreal::WrappedStruct>(variable);
     common::BehaviorVariableData *variable_data =
-        reinterpret_cast<common::BehaviorVariableData *>(wrapped->base.get());
+        reinterpret_cast<common::BehaviorVariableData *>(wrapped.base.get());
 
     variable_data->Type = static_cast<enums::EBehaviorVariableType>(variable_type);
 
