@@ -16,8 +16,8 @@ from .struct_builders import (
     build_bv_direction_vector,
     build_bv_flag,
     build_bv_instance,
-    build_unary_math,
     build_bv_vector,
+    build_unary_math,
 )
 
 if TYPE_CHECKING:
@@ -73,7 +73,7 @@ def update_variable_from_dict(variable: BehaviorVariable, data: JSONDict) -> Non
 
 @autoregister
 @command(splitter=obj_name_splitter)
-def update_variable(args: argparse.Namespace) -> None:
+def set_variable(args: argparse.Namespace) -> None:
     bpd = unrealsdk.find_object("Object", args.bpd)
     sequence_idx = args.sequence_idx
     if sequence_idx >= len(bpd.BehaviorSequences):
@@ -96,14 +96,14 @@ def update_variable(args: argparse.Namespace) -> None:
     if variable_idx == len(sequence.VariableData):
         var = BehaviorVariable(unrealsdk.make_struct("BehaviorVariableData"))
         update_variable_from_dict(var, cast("JSONDict", data))
-        sequence.VariableData.append(var)
+        sequence.VariableData.append(var.variable)
         return
     update_variable_from_dict(
         BehaviorVariable(sequence.VariableData[variable_idx]), cast("JSONDict", data)
     )
 
 
-update_variable.add_argument("bpd")
-update_variable.add_argument("sequence_idx", type=int)
-update_variable.add_argument("variable_idx", type=int)
-update_variable.add_argument("variable_data")
+set_variable.add_argument("bpd")
+set_variable.add_argument("sequence_idx", type=int)
+set_variable.add_argument("variable_idx", type=int)
+set_variable.add_argument("variable_data")

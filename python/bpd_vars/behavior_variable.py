@@ -61,3 +61,11 @@ class BehaviorVariable:
     def value(self, new_value: structs.BehaviorVariableDataValue) -> None:
         """Set the internal value."""
         _bpd_vars_native.change_variable_value(self._variable, new_value)
+
+    @property
+    def variable(self) -> BehaviorVariableData:
+        """Get the BehaviorVariableData.
+
+        There is no setter for this.
+        """
+        return self._variable

@@ -14,11 +14,6 @@ else:
     EBinaryMathOperation = unrealsdk.find_enum("EBinaryMathOperation")
 
 
-@dataclass
-class ListType[T]:  # noqa: D101
-    inner: T
-
-
 type JSONDict = dict[str, "JSONValue"]
 type JSONList = list["JSONValue"]
 type JSONValue = str | int | float | bool | JSONDict | JSONList | None
@@ -55,7 +50,7 @@ def build_rotator(data: JSONValueNotList) -> WrappedStruct:
 
 def build_subarray(data: JSONValueNotList) -> WrappedStruct:
     subarray = unrealsdk.make_struct("SubarrayData")
-    if ail := data.get("X"):
+    if ail := data.get("ArrayIndexAndLength"):
         subarray.ArrayIndexAndLength = int(ail)
     return subarray
 
