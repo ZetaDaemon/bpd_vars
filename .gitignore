@@ -29,6 +29,7 @@ __pycache__/
 *.o
 *.obj
 *.a
+*.pyd
 *.lib
 *.dll
 *.so
