@@ -57,7 +57,7 @@ struct BVBinaryMathData
 {
     common::SubarrayData OperandA;
     common::SubarrayData OperandB;
-    enums::EBinaryMathOperation Operation;
+    /*enums::EBinaryMathOperation*/ int32_t Operation;
 };
 static_assert(sizeof(BVBinaryMathData) == 0xC);
 

@@ -46,7 +46,7 @@ enum EDirectionRelativeToParent : uint8_t
     DIRECTION_MAX                        // 15
 };
 
-enum EBinaryMathOperation : int32_t
+/*enum EBinaryMathOperation : int32_t
 {
     BINARYMATH_Add,      // 0
     BINARYMATH_Sub,      // 1
@@ -59,6 +59,6 @@ enum EBinaryMathOperation : int32_t
     BINARYMATH_Maximum,  // 8
     BINARYMATH_NoChange, // 9
     BINARYMATH_MAX       // 10
-};
+};*/
 
 } // namespace bpd_vars::enums

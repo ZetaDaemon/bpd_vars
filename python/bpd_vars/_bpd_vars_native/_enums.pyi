@@ -41,8 +41,8 @@ class EDirectionRelativeToParent(IntEnum):
     DIRECTION_InverseTearOffMomentum = 14
     DIRECTION_MAX = 15
 
-class EBinaryMathOperation(IntEnum):
-    """WillowGame.Behavior_SimpleMath:EBinaryMathOperation."""
+"""class EBinaryMathOperation(IntEnum):
+    "WillowGame.Behavior_SimpleMath:EBinaryMathOperation."
 
     BINARYMATH_Add = 0
     BINARYMATH_Sub = 1
@@ -54,4 +54,4 @@ class EBinaryMathOperation(IntEnum):
     BINARYMATH_Min = 7
     BINARYMATH_Maximum = 8
     BINARYMATH_NoChange = 9
-    BINARYMATH_MAX = 10
+    BINARYMATH_MAX = 10"""

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 else:
     EBehaviorVariableType = unrealsdk.find_enum("EBehaviorVariableType")
     EDirectionRelativeToParent = unrealsdk.find_enum("EDirectionRelativeToParent")
-    EBinaryMathOperation = unrealsdk.find_enum("EBinaryMathOperation")
+    # EBinaryMathOperation = unrealsdk.find_enum("EBinaryMathOperation")
 
 
 type JSONDict = dict[str, "JSONValue"]
@@ -155,7 +155,7 @@ def build_bv_binary_math(data: JSONValueNotList) -> structs.BVBinaryMathData:
         new_variable_value.OperandB = build_subarray(opp_b)
 
     if x := data.get("Operation"):
-        new_variable_value.Operation = EBinaryMathOperation[x]
+        new_variable_value.Operation = int(x)  # EBinaryMathOperation[x]
 
     return new_variable_value
 

@@ -1,7 +1,7 @@
 from unrealsdk.unreal import UObject
 
 from ._common import AttributeInitializationData, Rotator, SubarrayData, Vector
-from ._enums import EBinaryMathOperation, EDirectionRelativeToParent
+from ._enums import EDirectionRelativeToParent
 
 class BVVector:
     Value: Vector
@@ -63,13 +63,13 @@ class BVInstanceDataData:
 class BVBinaryMathData:
     OperandA: SubarrayData
     OperandB: SubarrayData
-    Operation: EBinaryMathOperation
+    Operation: int  # EBinaryMathOperation
 
     def __init__(
         self,
         OperandA: SubarrayData | None = None,
         OperandB: SubarrayData | None = None,
-        Operation: EBinaryMathOperation = ...,
+        Operation: int = 0,  # EBinaryMathOperation = ...,
     ) -> None: ...
 
 class BVUnaryMathData:

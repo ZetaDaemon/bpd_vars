@@ -472,7 +472,7 @@ void bind_binary_math(py::module_ &m)
                         if (!Operation.is_none())
                         {
                             result.Operation =
-                                static_cast<enums::EBinaryMathOperation>(Operation.cast<int32_t>());
+                                /*static_cast<enums::EBinaryMathOperation>*/ (Operation.cast<int32_t>());
                         }
 
                         return result;
@@ -501,7 +501,7 @@ void bind_binary_math(py::module_ &m)
         "Operation",
         [](structs::BVBinaryMathData &self) { return py::int_(static_cast<int32_t>(self.Operation)); },
         [](structs::BVBinaryMathData &self, py::object value) {
-            self.Operation = static_cast<enums::EBinaryMathOperation>(value.cast<int32_t>());
+            self.Operation = /*static_cast<enums::EBinaryMathOperation>*/ (value.cast<int32_t>());
         });
 
     bound_class.def("__repr__", [](structs::BVBinaryMathData &self) {
