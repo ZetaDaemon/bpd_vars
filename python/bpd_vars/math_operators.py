@@ -23,15 +23,15 @@ class EBinaryMathOperation:
         ObjectObject_NotEqual = 19
 
     class EIntResult(IntEnum):
-        IntInt_Add = 2000002
-        IntInt_Subtract = 2000003
-        IntInt_Mult = 2000004
-        IntInt_Divide = 2000005
-        IntInt_Power = 2000006
+        IntInt_Add = 1000002
+        IntInt_Subtract = 1000003
+        IntInt_Mult = 1000004
+        IntInt_Divide = 1000005
+        IntInt_Power = 1000006
         IntInt_RandomRange = 1000007
-        IntInt_Average = 2000008
-        IntInt_Min = 2000009
-        IntInt_Max = 2000010
+        IntInt_Average = 1000008
+        IntInt_Min = 1000009
+        IntInt_Max = 1000010
 
     class EFloatResult(IntEnum):
         FloatFloat_Add = 2000002
