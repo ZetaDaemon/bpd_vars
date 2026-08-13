@@ -19,5 +19,21 @@ jobs:
           VERSION=$(python -c "import tomllib; print(tomllib.load(open('python/bpd_vars/pyproject.toml', 'rb'))['project']['version'])")
           echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Show version
-        run: echo "Project version is ${{ steps.version.outputs.VERSION }}"
+      - name: Check for existing release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.VERSION }}
+        run: |
+          if gh release view "v$VERSION" > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Release v$VERSION already exists."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "Release v$VERSION does not exist."
+          fi
+
+      - name: Show result
+        run: |
+          echo "Version: ${{ steps.version.outputs.VERSION }}"
+          echo "Release exists: ${{ steps.release.outputs.exists }}"
