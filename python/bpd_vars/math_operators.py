@@ -1,60 +1,62 @@
 from enum import IntEnum
 
 
-class EBinaryMathOperation:
-    class EBoolResult(IntEnum):
-        BoolBool_XNOR = 2
-        BoolBool_AND = 3
-        BoolBool_OR = 4
-        BoolBool_XOR = 5
-        FloatFloat_Equal = 6
-        FloatFloat_Greater = 7
-        FloatFloat_GreaterEqual = 8
-        FloatFloat_Less = 9
-        FloatFloat_LessEqual = 10
-        FloatFloat_NotEqual = 11
-        IntInt_Equal = 12
-        IntInt_Less = 13
-        IntInt_LessEqual = 14
-        IntInt_Greater = 15
-        IntInt_GreaterEqual = 16
-        IntInt_NotEqual = 17
-        ObjectObject_Equal = 18
-        ObjectObject_NotEqual = 19
+class EBinaryMathOperation(IntEnum):
+    """Binary Math Operations."""
 
-    class EIntResult(IntEnum):
-        IntInt_Add = 1000002
-        IntInt_Subtract = 1000003
-        IntInt_Mult = 1000004
-        IntInt_Divide = 1000005
-        IntInt_Power = 1000006
-        IntInt_RandomRange = 1000007
-        IntInt_Average = 1000008
-        IntInt_Min = 1000009
-        IntInt_Max = 1000010
+    # Bool Result
+    BoolBool_XNOR = 2
+    BoolBool_AND = 3
+    BoolBool_OR = 4
+    BoolBool_XOR = 5
+    FloatFloat_Equal = 6
+    FloatFloat_Less = 7
+    FloatFloat_LessEqual = 8
+    FloatFloat_Greater = 9
+    FloatFloat_GreaterEqual = 10
+    FloatFloat_NotEqual = 11
+    IntInt_Equal = 12
+    IntInt_Less = 13
+    IntInt_LessEqual = 14
+    IntInt_Greater = 15
+    IntInt_GreaterEqual = 16
+    IntInt_NotEqual = 17
+    ObjectObject_Equal = 18
+    ObjectObject_NotEqual = 19
 
-    class EFloatResult(IntEnum):
-        FloatFloat_Add = 2000002
-        FloatFloat_Subtract = 2000003
-        FloatFloat_Mult = 2000004
-        FloatFloat_Divide = 2000005
-        FloatFloat_Power = 2000006
-        FloatFloat_RandomRange = 2000007
-        FloatFloat_Average = 2000008
-        FloatFloat_Min = 2000009
-        FloatFloat_Max = 2000010
-        VectorVector_Dot = 2000011
-        VectorVector_Distance = 2000012
+    # Int Result
+    IntInt_Add = 1000002
+    IntInt_Subtract = 1000003
+    IntInt_Mult = 1000004
+    IntInt_Divide = 1000005
+    IntInt_Power = 1000006
+    IntInt_RandomRange = 1000007
+    IntInt_Average = 1000008
+    IntInt_Min = 1000009
+    IntInt_Max = 1000010
 
-    class EVectorResult(IntEnum):
-        VectorVector_Add = 3000002
-        VectorVector_Subtract = 3000003
-        VectorVector_Divide = 3000004
-        VectorVector_Multiply = 3000005
-        VectorVector_Project = 3000006
-        VectorVector_Cross = 3000007
-        VectorVector_NormalizeDifference = 3000008
-        VectorVector_Rotate = 3000009
+    # Float Result
+    FloatFloat_Add = 2000002
+    FloatFloat_Subtract = 2000003
+    FloatFloat_Mult = 2000004
+    FloatFloat_Divide = 2000005
+    FloatFloat_Power = 2000006
+    FloatFloat_RandomRange = 2000007
+    FloatFloat_Average = 2000008
+    FloatFloat_Min = 2000009
+    FloatFloat_Max = 2000010
+    VectorVector_Dot = 2000011
+    VectorVector_Distance = 2000012
+
+    # Vector Result
+    VectorVector_Add = 3000002
+    VectorVector_Subtract = 3000003
+    VectorVector_Divide = 3000004
+    VectorVector_Multiply = 3000005
+    VectorVector_Project = 3000006
+    VectorVector_Cross = 3000007
+    VectorVector_NormalizeDifference = 3000008
+    VectorVector_Rotate = 3000009
 
 
 class EUnaryMathOperation:
@@ -115,5 +117,30 @@ class EUnaryMathOperation:
         """
 
         IsValidInt = 2000001
-        VectorIfValid = 3000001
+        ToVector = 3000001
         """If valid returns a vector of all 1's, otherwise it's all 0's."""
+
+    class EAll(IntEnum):
+        IsTruthy = 1
+        IsFalsey = 2
+        ToFloat = 1000001
+        FloatNegate = 1000002
+        IntAbs = 1000003
+        X = 1000004
+        Y = 1000005
+        Z = 1000006
+        MagnitudeOfVector = 1000007
+        Cos = 1000008
+        Sin = 1000009
+        Tan = 1000010
+        ToInt = 2000001
+        ToIntRoundDown = 2000002
+        ToIntRoundUp = 2000003
+        ToIntRound = 2000004
+        ToIntTruncate = 2000005
+        IntNegate = 2000006
+        FloatAbs = 2000007
+        ToVector = 3000001
+        VectorNegate = 3000002
+        Normalize = 3000003
+        Abs = 3000004
