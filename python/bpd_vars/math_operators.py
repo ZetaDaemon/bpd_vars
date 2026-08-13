@@ -2,7 +2,7 @@ from enum import IntEnum
 
 
 class EBinaryMathOperation(IntEnum):
-    """Binary Math Operations."""
+    """Binary math operations."""
 
     # Bool Result
     BoolBool_XNOR = 2
@@ -60,7 +60,15 @@ class EBinaryMathOperation(IntEnum):
 
 
 class EUnaryMathOperation:
+    """Unary math operations.
+
+    Unary math operations are handled by variable type rather than
+    each operation uniquely meaning one thing.
+    """
+
     class EBoolOperation(IntEnum):
+        """Operations for bool variables."""
+
         IsTruthy = 1
         IsFalsey = 2
         ToFloat = 1000001
@@ -68,6 +76,8 @@ class EUnaryMathOperation:
         ToVector = 3000001
 
     class EIntOperation(IntEnum):
+        """Operations for int variables."""
+
         IsTruthy = 1
         IsFalsey = 2
         ToFloat = 1000001
@@ -77,6 +87,8 @@ class EUnaryMathOperation:
         ToVector = 3000001
 
     class EFloatOperation(IntEnum):
+        """Operations for float variables."""
+
         IsTruthy = 1
         Negate = 1000002
         Abs = 1000003
@@ -91,6 +103,8 @@ class EUnaryMathOperation:
         ToVector = 3000001
 
     class EVectorOperation(IntEnum):
+        """Operations for vector variables."""
+
         IsTruthy = 1
         Magnitude = 1000001
         X = 1000004
@@ -107,6 +121,8 @@ class EUnaryMathOperation:
         Abs = 3000004
 
     class EObjectOperation(IntEnum):
+        """Operations for bool variables."""
+
         IsTruthy = 1
         ToFloat = 1000001
         """Calls ObjToFloat.
@@ -120,7 +136,13 @@ class EUnaryMathOperation:
         ToVector = 3000001
         """If valid returns a vector of all 1's, otherwise it's all 0's."""
 
-    class EAll(IntEnum):
+    class _EAll(IntEnum):
+        """All operations.
+
+        Normally you would use one of the type enums, this exists to get a name
+        for the operation from the value.
+        """
+
         IsTruthy = 1
         IsFalsey = 2
         ToFloat = 1000001
