@@ -39,6 +39,3 @@ def change_variable_type(
         variable_type: The new type of data to store.
 
     """
-
-def version() -> str:
-    """Get the native module version."""

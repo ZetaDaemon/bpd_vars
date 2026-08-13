@@ -8,8 +8,6 @@ PYBIND11_MODULE(_bpd_vars_native, m)
 {
     m.doc() = "Native functions for bpd_vars";
 
-    m.def("version", []() { return "bpd_vars native 1.0"; }, "Returns native module version.");
-
     m.def("get_behavior_variable_data",
           &bpd_vars::get_behavior_variable_data,
           py::arg("variable"),
