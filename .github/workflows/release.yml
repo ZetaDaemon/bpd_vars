@@ -13,5 +13,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Say hello
-        run: echo "GitHub Actions is working"
+      - name: Read project version
+        id: version
+        run: |
+          VERSION=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Show version
+        run: echo "Project version is ${{ steps.version.outputs.VERSION }}"
