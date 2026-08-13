@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 import unrealsdk
+from command_extensions.builtins import parse_object
 from unrealsdk.unreal import WrappedStruct
 
 from ._bpd_vars_native import structs
@@ -61,12 +62,10 @@ def build_initdata(data: JSONValueNotList) -> WrappedStruct:
         initdata.BaseValueConstant = float(constant)
 
     if attr := data.get("BaseValueAttribute"):
-        initdata.BaseValueAttribute = unrealsdk.find_object("AttributeDefinition", attr)
+        initdata.BaseValueAttribute = parse_object(attr)
 
     if initdef := data.get("InitializationDefinition"):
-        initdata.InitializationDefinition = unrealsdk.find_object(
-            "AttributeInitializationDefinition", initdef
-        )
+        initdata.InitializationDefinition = parse_object(initdef)
 
     if scale := data.get("BaseValueScaleConstant"):
         initdata.BaseValueScaleConstant = float(scale)
