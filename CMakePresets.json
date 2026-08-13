@@ -13,6 +13,26 @@
             ],
             "toolchainFile": "libs/pyunrealsdk/common_cmake/i686-w64-mingw32.cmake",
             "generator": "Ninja"
+        },
+        {
+            "name": "bpd-vars-local",
+            "description": "",
+            "displayName": "",
+            "inherits": [
+                "bpd-vars"
+            ],
+            "cacheVariables": {
+                "BPD_VARS_LOCAL_BUILD": "TRUE"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "bpd-vars-build",
+            "configurePreset": "bpd-vars",
+            "targets": [
+                "_bpd_vars_native"
+            ]
         }
     ]
 }

@@ -38,23 +38,25 @@ add_custom_command(
             "${BPD_VARS_PYTHON_DIR}"
 )
 
-set(BL2_PLUGIN_DIR
-    "$ENV{HOME}/.local/share/Steam/steamapps/common/Borderlands 2/Binaries/Win32/Plugins"
-)
+if(BPD_VARS_LOCAL_BUILD)
+    set(BL2_PLUGIN_DIR
+        "$ENV{HOME}/.local/share/Steam/steamapps/common/Borderlands 2/Binaries/Win32/Plugins"
+    )
 
-add_custom_command(
-    TARGET _bpd_vars_native
-    POST_BUILD
+    add_custom_command(
+        TARGET _bpd_vars_native
+        POST_BUILD
 
-    COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:_bpd_vars_native>
-        "${BL2_PLUGIN_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E copy
+            $<TARGET_FILE:_bpd_vars_native>
+            "${BL2_PLUGIN_DIR}"
 
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_BINARY_DIR}/pyunrealsdk-build/pyunrealsdk.dll"
-        "${BL2_PLUGIN_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E copy
+            "${CMAKE_BINARY_DIR}/pyunrealsdk-build/pyunrealsdk.dll"
+            "${BL2_PLUGIN_DIR}"
 
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_BINARY_DIR}/pyunrealsdk-build/libs/unrealsdk/unrealsdk.dll"
-        "${BL2_PLUGIN_DIR}"
-)
+        COMMAND ${CMAKE_COMMAND} -E copy
+            "${CMAKE_BINARY_DIR}/pyunrealsdk-build/libs/unrealsdk/unrealsdk.dll"
+            "${BL2_PLUGIN_DIR}"
+    )
+endif()
