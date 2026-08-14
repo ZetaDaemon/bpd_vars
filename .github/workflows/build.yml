@@ -1,0 +1,23 @@
+name: Build
+
+on:
+    push:
+        branches:
+            - main
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: windows-latest
+
+        steps:
+            - name: Check out repository and submodules
+              uses: actions/checkout@v7
+              with:
+                  submodules: recursive
+
+            - name: Configure
+              run: cmake --preset bpd-vars
+
+            - name: Build
+              run: cmake --build --preset bpd-vars-build
