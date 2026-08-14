@@ -9,9 +9,8 @@
             "description": "",
             "displayName": "",
             "inherits": [
-                "mingw-willow-release"
+                "clang-willow-release"
             ],
-            "toolchainFile": "libs/pyunrealsdk/common_cmake/i686-w64-mingw32.cmake",
             "generator": "Ninja"
         },
         {
@@ -19,17 +18,25 @@
             "description": "",
             "displayName": "",
             "inherits": [
-                "bpd-vars"
+                "clang-cross-willow-release"
             ],
             "cacheVariables": {
                 "BPD_VARS_LOCAL_BUILD": "TRUE"
-            }
+            },
+            "generator": "Ninja"
         }
     ],
     "buildPresets": [
         {
             "name": "bpd-vars-build",
             "configurePreset": "bpd-vars",
+            "targets": [
+                "_bpd_vars_native"
+            ]
+        },
+        {
+            "name": "bpd-vars-build-local",
+            "configurePreset": "bpd-vars-local",
             "targets": [
                 "_bpd_vars_native"
             ]
