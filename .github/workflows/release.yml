@@ -4,39 +4,74 @@ on:
     push:
         branches:
             - main
+    workflow_dispatch:
+
+permissions:
+    contents: write
 
 jobs:
-    test:
+    check-release:
         runs-on: ubuntu-latest
+        outputs:
+            should-release: ${{ steps.check.outputs.should-release }}
+            version: ${{ steps.check.outputs.version }}
 
         steps:
             - name: Check out repository
               uses: actions/checkout@v7
 
-            - name: Read project version
-              id: version
-              run: |
-                  VERSION=$(python -c "import tomllib; print(tomllib.load(open('python/bpd_vars/pyproject.toml', 'rb'))['project']['version'])")
-                  echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
-
-            - name: Check for existing release
-              id: release
+            - name: Check version
+              id: check
               env:
                   GH_TOKEN: ${{ github.token }}
-                  VERSION: ${{ steps.version.outputs.VERSION }}
               run: |
-                  if gh release view "v$VERSION" > /dev/null 2>&1; then
-                    echo "exists=true" >> "$GITHUB_OUTPUT"
-                    echo "Release v$VERSION already exists."
+                  VERSION=$(python -c "import tomllib; print(tomllib.load(open('python/bpd_vars/pyproject.toml', 'rb'))['project']['version'])")
+
+                  echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+                  if gh release view "v$VERSION" >/dev/null 2>&1; then
+                      echo "Release v$VERSION already exists."
+                      echo "should-release=false" >> "$GITHUB_OUTPUT"
                   else
-                    echo "exists=false" >> "$GITHUB_OUTPUT"
-                    echo "Release v$VERSION does not exist."
+                      echo "Release v$VERSION does not exist."
+                      echo "should-release=true" >> "$GITHUB_OUTPUT"
                   fi
 
-            - name: Show release needed
-              if: steps.release.outputs.exists == 'false'
-              run: echo "A new release is needed."
+    release:
+        needs: check-release
+        if: needs.check-release.outputs.should-release == 'true'
+        runs-on: windows-latest
 
-            - name: Show release not needed
-              if: steps.release.outputs.exists == 'true'
-              run: echo "Release already exists. Nothing to do."
+        steps:
+            - name: Check out repository and submodules
+              uses: actions/checkout@v7
+              with:
+                  submodules: recursive
+
+            - name: Configure
+              run: cmake --preset bpd-vars
+
+            - name: Build
+              run: cmake --build --preset bpd-vars-build
+
+            - name: Package mod
+              shell: pwsh
+              run: |
+                  Compress-Archive `
+                    -Path python\bpd_vars `
+                    -DestinationPath bpd_vars.zip
+
+            - name: Create release
+              shell: pwsh
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  $version = "${{ needs.check-release.outputs.version }}"
+                  $repo = "${{ github.repository }}"
+                  $anchor = $version.ToLower().Replace(".", "")
+                  $notes = "See the [v$version changelog](https://github.com/$repo/blob/main/CHANGELOG.md#$anchor)."
+
+                  gh release create "v$version" `
+                    bpd_vars.zip `
+                    --title "bpd_vars v$version" `
+                    --notes $notes
