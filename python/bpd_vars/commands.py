@@ -206,20 +206,24 @@ def variable_value_to_string(sequence: WrappedStruct, variable: BehaviorVariable
 def print_variables(args: argparse.Namespace) -> None:
     bpd = parse_object(args.bpd)
     sequence_idx = args.sequence_idx
-    if sequence_idx >= len(bpd.BehaviorSequences):
-        unrealsdk.logging.error(f"sequence index {sequence_idx} is out of range for {bpd}")
-        return
-    sequence = bpd.BehaviorSequences[sequence_idx]
+    if sequence_idx is None:
+        sequences = bpd.BehaviorSequences
+    else:
+        if sequence_idx >= len(bpd.BehaviorSequences):
+            unrealsdk.logging.error(f"sequence index {sequence_idx} is out of range for {bpd}")
+            return
+        sequences = [bpd.BehaviorSequences[sequence_idx]]
 
-    for idx, v in enumerate(sequence.VariableData):
-        variable = BehaviorVariable(v)
-        unrealsdk.logging.info(
-            idx,
-            f"{variable.name}",
-            f"{variable.variable_type.name[5:]}",  # Trim BVAR_
-            variable_value_to_string(sequence, variable),
-        )
+    for sequence in sequences:
+        for idx, v in enumerate(sequence.VariableData):
+            variable = BehaviorVariable(v)
+            unrealsdk.logging.info(
+                idx,
+                f"{variable.name}",
+                f"{variable.variable_type.name[5:]}",  # Trim BVAR_
+                variable_value_to_string(sequence, variable),
+            )
 
 
 print_variables.add_argument("bpd")
-print_variables.add_argument("sequence_idx", type=int)
+print_variables.add_argument("-s", "--sequence_idx", type=int)
