@@ -21,3 +21,8 @@ jobs:
 
             - name: Build
               run: cmake --build --preset bpd-vars-build
+
+            - name: Show package files
+              shell: pwsh
+              run: |
+                  Get-ChildItem -Recurse python\bpd_vars
