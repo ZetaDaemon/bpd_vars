@@ -10,8 +10,7 @@
             "displayName": "",
             "inherits": [
                 "clang-willow-release"
-            ],
-            "generator": "Ninja"
+            ]
         },
         {
             "name": "bpd-vars-local",
@@ -22,8 +21,7 @@
             ],
             "cacheVariables": {
                 "BPD_VARS_LOCAL_BUILD": "TRUE"
-            },
-            "generator": "Ninja"
+            }
         }
     ],
     "buildPresets": [
