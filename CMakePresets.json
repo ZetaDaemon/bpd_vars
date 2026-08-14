@@ -10,7 +10,8 @@
             "displayName": "",
             "inherits": [
                 "clang-willow-release"
-            ]
+            ],
+            "toolchainFile": "libs/pyunrealsdk/common_cmake/clang-x86.cmake"
         },
         {
             "name": "bpd-vars-local",
@@ -21,7 +22,8 @@
             ],
             "cacheVariables": {
                 "BPD_VARS_LOCAL_BUILD": "TRUE"
-            }
+            },
+            "toolchainFile": "libs/pyunrealsdk/common_cmake/clang-cross-x86.cmake"
         }
     ],
     "buildPresets": [
