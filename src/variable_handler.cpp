@@ -25,8 +25,7 @@ py::object get_behavior_variable_data(py::object variable)
 {
     auto wrapped = pyunrealsdk::type_casters::cast<unrealsdk::unreal::WrappedStruct>(variable);
 
-    common::BehaviorVariableData *variable_data =
-        reinterpret_cast<common::BehaviorVariableData *>(wrapped.base.get());
+    auto *variable_data = reinterpret_cast<common::BehaviorVariableData *>(wrapped.base.get());
     switch (variable_data->Type)
     {
     case enums::EBehaviorVariableType::BVAR_Bool:
@@ -78,12 +77,11 @@ py::object get_behavior_variable_data(py::object variable)
 template <typename T> T *copy_pyobj_to_struct_pointer(py::object obj)
 {
     T *source = nullptr;
-    void *memory;
     if (!obj.is_none())
     {
         source = obj.cast<T *>();
     }
-    memory = unrealsdk::u_malloc(sizeof(T));
+    void *memory = unrealsdk::u_malloc(sizeof(T));
     if (memory == nullptr)
     {
         throw std::bad_alloc();
@@ -92,7 +90,7 @@ template <typename T> T *copy_pyobj_to_struct_pointer(py::object obj)
     {
         return new (memory) T{};
     }
-    return new (memory) T(*source);
+    return new (memory) T{ *source };
 }
 
 void change_variable_value_inner(common::BehaviorVariableData *variable_data, py::object new_value)
