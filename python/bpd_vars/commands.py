@@ -182,7 +182,7 @@ def variable_value_to_string(sequence: WrappedStruct, variable: BehaviorVariable
             )
             cone_var = lookup_variable_indexes(sequence, value.ConeVariable.ArrayIndexAndLength)
             return (
-                f"(Direction: {EDirectionRelativeToParent[value.Direction].name}, "
+                f"(Direction: {EDirectionRelativeToParent(value.Direction).name}, "
                 f"ParentVariable: {parent}, "
                 f"DefaultDirection: {value.DefaultDirection}, "
                 f"DefaultDirectionVariable: {direction_var}, "
