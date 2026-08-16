@@ -68,7 +68,7 @@ jobs:
               run: |
                   $version = "${{ needs.check-release.outputs.version }}"
                   $repo = "${{ github.repository }}"
-                  $anchor = $version.ToLower().Replace(".", "")
+                  $anchor = $version.Replace(".", "")
                   $notes = "See the [v$version changelog](https://github.com/$repo/blob/main/CHANGELOG.md#$anchor)."
 
                   gh release create "v$version" `
