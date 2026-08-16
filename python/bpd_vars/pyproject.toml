@@ -1,6 +1,6 @@
 [project]
 name = "bpd_vars"
-version = "1.0"
+version = "0.9"
 authors = [{ name = "ZetaDaemon" }]
 description = """\
 Allows for reading and writing BehaviorProviderDefinition variables."""
