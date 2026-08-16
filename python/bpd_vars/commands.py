@@ -93,10 +93,10 @@ def set_variable(args: argparse.Namespace) -> None:
         )
         return
     try:
-        data = json.loads(args.variable_data)
+        data = json.loads(args.variable_value)
     except Exception as e:  # noqa: BLE001
         # Don't raise errors during command handling, need to continue on.
-        unrealsdk.logging.error(f"Failed to decode {args.variable_data}")
+        unrealsdk.logging.error(f"Failed to decode {args.variable_value}")
         unrealsdk.logging.error(e)
         return
     if variable_idx == len(sequence.VariableData):
@@ -112,12 +112,37 @@ def set_variable(args: argparse.Namespace) -> None:
 set_variable.add_argument("bpd")
 set_variable.add_argument("sequence_idx", type=int)
 set_variable.add_argument("variable_idx", type=int)
-set_variable.add_argument("variable_data")
+set_variable.add_argument("variable_value")
 
 
-SUBARRAY_STRUCT_TYPE = unrealsdk.find_object(
-    "ScriptStruct", "GearboxFramework.BehaviorProviderDefinition:SubarrayData"
-)
+@autoregister
+@command(splitter=obj_name_splitter)
+def set_variable_data(args: argparse.Namespace) -> None:
+    bpd = parse_object(args.bpd)
+    sequence_idx = args.sequence_idx
+    if sequence_idx >= len(bpd.BehaviorSequences):
+        unrealsdk.logging.error(f"sequence index {sequence_idx} is out of range for {bpd}")
+        return
+    sequence = bpd.BehaviorSequences[sequence_idx]
+    try:
+        data = json.loads(args.variable_data)
+    except Exception as e:  # noqa: BLE001
+        # Don't raise errors during command handling, need to continue on.
+        unrealsdk.logging.error(f"Failed to decode {args.variable_data}")
+        unrealsdk.logging.error(e)
+        return
+
+    variable_data = []
+    for var_value in data:
+        var = BehaviorVariable(unrealsdk.make_struct("BehaviorVariableData"))
+        update_variable_from_dict(var, cast("JSONDict", var_value))
+        variable_data.append(var.variable)
+    sequence.VariableData = variable_data
+
+
+set_variable_data.add_argument("bpd")
+set_variable_data.add_argument("sequence_idx", type=int)
+set_variable_data.add_argument("variable_data")
 
 
 def parse_arrayindexandlength(number: int) -> tuple[int, int]:
