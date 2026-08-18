@@ -1,9 +1,8 @@
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 import unrealsdk
 from command_extensions.builtins import parse_object
-from unrealsdk.unreal import WrappedStruct
+from unrealsdk.unreal import UObject, WrappedStruct
 
 from ._bpd_vars_native import structs
 
@@ -12,13 +11,22 @@ if TYPE_CHECKING:
 else:
     EBehaviorVariableType = unrealsdk.find_enum("EBehaviorVariableType")
     EDirectionRelativeToParent = unrealsdk.find_enum("EDirectionRelativeToParent")
-    # EBinaryMathOperation = unrealsdk.find_enum("EBinaryMathOperation")
 
 
 type JSONDict = dict[str, "JSONValue"]
 type JSONList = list["JSONValue"]
 type JSONValue = str | int | float | bool | JSONDict | JSONList | None
 type JSONValueNotList = str | int | float | bool | JSONDict | None
+
+
+def parse_object_of_class(name: str | None, cls: str) -> UObject | None:
+    if name is None or name == "None":
+        return None
+    obj = parse_object(name)
+    if obj is not None and not obj.Class._inherits(unrealsdk.find_class(cls)):
+        unrealsdk.logging.error(f"{name} is not an instance of {cls}")
+        return None
+    return obj
 
 
 def build_vector(data: JSONValueNotList) -> WrappedStruct:
@@ -62,10 +70,12 @@ def build_initdata(data: JSONValueNotList) -> WrappedStruct:
         initdata.BaseValueConstant = float(constant)
 
     if attr := data.get("BaseValueAttribute"):
-        initdata.BaseValueAttribute = parse_object(attr)
+        initdata.BaseValueAttribute = parse_object_of_class(attr, "AttributeDefinition")
 
     if initdef := data.get("InitializationDefinition"):
-        initdata.InitializationDefinition = parse_object(initdef)
+        initdata.InitializationDefinition = parse_object_of_class(
+            initdef, "AttributeInitializationDefinition"
+        )
 
     if scale := data.get("BaseValueScaleConstant"):
         initdata.BaseValueScaleConstant = float(scale)
@@ -105,7 +115,7 @@ def build_bv_instance(data: JSONValueNotList) -> structs.BVInstanceDataData:
 def build_bv_direction_vector(data: JSONValueNotList) -> structs.BVDirectionVectorData:
     new_variable_value = structs.BVDirectionVectorData()
     if direction := data.get("Direction"):
-        new_variable_value.Direction = EDirectionRelativeToParent[direction]
+        new_variable_value.Direction = EDirectionRelativeToParent(direction)
 
     if parent := data.get("ParentVariable"):
         new_variable_value.ParentVariable = build_subarray(parent)
@@ -154,7 +164,7 @@ def build_bv_binary_math(data: JSONValueNotList) -> structs.BVBinaryMathData:
         new_variable_value.OperandB = build_subarray(opp_b)
 
     if x := data.get("Operation"):
-        new_variable_value.Operation = int(x)  # EBinaryMathOperation[x]
+        new_variable_value.Operation = int(x)
 
     return new_variable_value
 
@@ -176,6 +186,6 @@ def build_bv_flag(data: JSONValueNotList) -> structs.BVFlagData:
         new_variable_value.ContextVariable = build_subarray(context)
 
     if x := data.get("FlagDef"):
-        new_variable_value.FlagDef = unrealsdk.find_object("FlagDefinition", x)
+        new_variable_value.FlagDef = parse_object_of_class(x, "FlagDefinition")
 
     return new_variable_value
