@@ -11,6 +11,9 @@
             "inherits": [
                 "clang-willow-release"
             ],
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            },
             "toolchainFile": "libs/pyunrealsdk/common_cmake/clang-x86.cmake"
         },
         {
@@ -21,6 +24,8 @@
                 "clang-cross-willow-release"
             ],
             "cacheVariables": {
+                "MSVC_WINE_ENV_SCRIPT": "$env{HOME}/win-sdk/opt/msvc/bin/x86/msvcenv.sh",
+                "CMAKE_BUILD_TYPE": "Release",
                 "BPD_VARS_LOCAL_BUILD": "TRUE"
             },
             "toolchainFile": "libs/pyunrealsdk/common_cmake/clang-cross-x86.cmake"

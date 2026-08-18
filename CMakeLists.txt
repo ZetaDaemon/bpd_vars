@@ -48,10 +48,6 @@ if(BPD_VARS_LOCAL_BUILD)
         POST_BUILD
 
         COMMAND ${CMAKE_COMMAND} -E copy
-            $<TARGET_FILE:_bpd_vars_native>
-            "${BL2_PLUGIN_DIR}"
-
-        COMMAND ${CMAKE_COMMAND} -E copy
             "${CMAKE_BINARY_DIR}/pyunrealsdk-build/pyunrealsdk.dll"
             "${BL2_PLUGIN_DIR}"
 
