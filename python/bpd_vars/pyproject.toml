@@ -1,6 +1,6 @@
 [project]
 name = "bpd_vars"
-version = "0.9"
+version = "1.0"
 authors = [{ name = "ZetaDaemon" }]
 description = """\
 Allows for reading and writing BehaviorProviderDefinition variables."""
@@ -10,3 +10,6 @@ dependencies = ["command_extensions"]
 name = "BPD Vars"
 supported_games = ["BL2", "TPS"]
 license = { name = "GPL3", url = "https://choosealicense.com/licenses/gpl-3.0/" }
+
+[tool.build]
+skip_release = true
