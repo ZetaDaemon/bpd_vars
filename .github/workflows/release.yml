@@ -28,7 +28,8 @@ jobs:
                   SKIP_RELEASE=$(python -c '
                   import tomllib
                   with open("python/bpd_vars/pyproject.toml", "rb") as f:
-                    print(f.get("tool",{}).get("build", {}).get({skip_release}, False) )
+                    config = tomllib.load(f)
+                    print(config.get("tool",{}).get("build", {}).get({skip_release}, False) )
                   ')
 
                   if [ "$SKIP_RELEASE" = "True" ]; then
